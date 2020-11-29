@@ -68,9 +68,11 @@ element = do { i        <- natural
              ; _        <- spaces
              ; (ts, es)
                     <-  elementParse (string "1") line
-                    <|> elementParse (string "3") triangle
+                    <|> elementParse (string "2") triangle
                     <|> elementParse (string "3") quadrangle
                     <|> elementParse (string "4") tetrahedron
+                    <|> elementParse (string "8") line3
+                    <|> elementParse (string "9") triangle6
              ; return (Element i ts es)
              }
 
@@ -140,3 +142,18 @@ triangle = do { i0  <- natural
               ; i2  <- natural
               ; return (Triangle i0 i1 i2)
               }
+
+triangle6 :: Stream s m Char => ParsecT s u m ElementType
+triangle6 = do { i0  <- natural
+               ; _   <- spaces
+               ; i1  <- natural
+               ; _   <- spaces
+               ; i2  <- natural
+               ; _   <- spaces
+               ; i3  <- natural
+               ; _   <- spaces
+               ; i4  <- natural
+               ; _   <- spaces
+               ; i5  <- natural
+               ; return (Triangle6 i0 i1 i2 i3 i4 i5)
+               }
