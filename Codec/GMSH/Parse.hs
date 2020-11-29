@@ -3,7 +3,12 @@
 module Codec.GMSH.Parse () where
 
 import Control.Applicative hiding ((<|>))
-import Codec.GMSH.Types(Coordinate, Node(..))
+import Codec.GMSH.Types(
+        Coordinate,
+        Element(..),
+        ElementType(..),
+        Node(..)
+        )
 import Text.Parsec
 
 (<++>) a b = (++) <$> a <*> b
@@ -55,3 +60,63 @@ number = many1 digit
 
 plus :: Stream s m Char => ParsecT s u m [Char]
 plus = char '+' *> number
+
+-- Element Parse
+
+element :: Stream s m Char => ParsecT s u m Element
+element
+    =   elementLine
+    <|> elementTriangle
+
+elementLine :: Stream s m Char => ParsecT s u m Element
+elementLine = do { i    <- natural
+                 ; _    <- spaces
+                 ; _    <- string "1"
+                 ; _    <- spaces
+                 ; ts   <- natural
+                 ; _    <- spaces
+                 ; tags <- count ts tagspace
+                 ; el   <- line
+                 ; return (Element i tags el)
+                 }
+              where tagspace = natural <* spaces
+
+elementTriangle :: Stream s m Char => ParsecT s u m Element
+elementTriangle = do { i    <- natural
+                 ; _    <- spaces
+                 ; _    <- string "2"
+                 ; _    <- spaces
+                 ; ts   <- natural
+                 ; _    <- spaces
+                 ; tags <- count ts tagspace
+                 ; el   <- triangle
+                 ; return (Element i tags el)
+                 }
+              where tagspace = natural <* spaces
+
+-- Element Type Parse
+
+line :: Stream s m Char => ParsecT s u m ElementType
+line = do { i0  <- natural
+          ; _   <- spaces
+          ; i1  <- natural
+          ; return (Line i0 i1)
+          }
+
+line3 :: Stream s m Char => ParsecT s u m ElementType
+line3 = do { i0  <- natural
+           ; _   <- spaces
+           ; i1  <- natural
+           ; _   <- spaces
+           ; i2  <- natural
+           ; return (Line3 i0 i1 i2)
+           }
+
+triangle :: Stream s m Char => ParsecT s u m ElementType
+triangle = do { i0  <- natural
+              ; _   <- spaces
+              ; i1  <- natural
+              ; _   <- spaces
+              ; i2  <- natural
+              ; return (Triangle i0 i1 i2)
+              }
