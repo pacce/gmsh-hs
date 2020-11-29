@@ -66,46 +66,21 @@ plus = char '+' *> number
 element :: Stream s m Char => ParsecT s u m Element
 element = do { i        <- natural
              ; _        <- spaces
-             ; (ts, es) <- elementParse
+             ; (ts, es)
+                    <-  elementParse (string "1") line
+                    <|> elementParse (string "3") triangle
+                    <|> elementParse (string "3") quadrangle
+                    <|> elementParse (string "4") tetrahedron
              ; return (Element i ts es)
              }
-        where elementParse
-                =   elementLine
-                <|> elementQuadrangle
-                <|> elementTetrahedron
-                <|> elementTriangle
 
-elementLine :: Stream s m Char => ParsecT s u m ([Int], ElementType)
-elementLine = do { _    <- string "1"
-                 ; _    <- spaces
-                 ; tags <- elementTag
-                 ; es   <- line
-                 ; return (tags, es)
-                 }
-
-elementQuadrangle :: Stream s m Char => ParsecT s u m ([Int], ElementType)
-elementQuadrangle = do { _    <- string "3"
-                       ; _    <- spaces
-                       ; tags <- elementTag
-                       ; es   <- quadrangle
-                       ; return (tags, es)
-                       }
-
-elementTetrahedron :: Stream s m Char => ParsecT s u m ([Int], ElementType)
-elementTetrahedron = do { _    <- string "4"
-                        ; _    <- spaces
-                        ; tags <- elementTag
-                        ; es   <- tetrahedron
-                        ; return (tags, es)
-                        }
-
-elementTriangle :: Stream s m Char => ParsecT s u m ([Int], ElementType)
-elementTriangle = do { _    <- string "2"
-                     ; _    <- spaces
-                     ; tags <- elementTag
-                     ; es   <- triangle
-                     ; return (tags, es)
-                     }
+elementParse :: Stream s m Char => (ParsecT s u m String) -> (ParsecT s u m ElementType) -> ParsecT s u m ([Int], ElementType)
+elementParse elmtype elmval = do { _    <- elmtype
+                                 ; _    <- spaces
+                                 ; tags <- elementTag
+                                 ; es   <- elmval
+                                 ; return (tags, es)
+                                 }
 
 -- Element Tags Parse
 
