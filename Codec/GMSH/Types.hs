@@ -6,7 +6,7 @@ module Codec.GMSH.Types (
 type Coordinate = Float
 
 data Node = Node {
-    nodeNumber  :: Integer,
+    nodeNumber  :: Int,
     x           :: Coordinate,
     y           :: Coordinate,
     z           :: Coordinate

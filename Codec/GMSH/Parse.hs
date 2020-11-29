@@ -24,9 +24,9 @@ integer = plus <|> minus <|> number
 minus :: Stream s m Char => ParsecT s u m [Char]
 minus = char '-' <:> number
 
-natural :: Stream s m Char => ParsecT s u m Integer
+natural :: Stream s m Char => ParsecT s u m Int
 natural = fmap rd $ plus <|> number
-    where rd = read :: String -> Integer
+    where rd = read :: String -> Int
 
 node :: Stream s m Char => ParsecT s u m Node
 node = do { index <- natural
@@ -38,6 +38,17 @@ node = do { index <- natural
           ; z <- coordinate
           ; return (Node index x y z)
           }
+
+nodes:: Stream s m Char => ParsecT s u m [Node]
+nodes = do { _      <- string "$Nodes"
+           ; _      <- endOfLine
+           ; ns     <- natural
+           ; _      <- endOfLine
+           ; nodes  <- count ns nodeline
+           ; _      <- string "$EndNodes"
+           ; return nodes
+           }
+        where nodeline = node <* endOfLine
 
 number :: Stream s m Char => ParsecT s u m [Char]
 number = many1 digit
