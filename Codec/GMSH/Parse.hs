@@ -66,6 +66,7 @@ plus = char '+' *> number
 element :: Stream s m Char => ParsecT s u m Element
 element
     =   elementLine
+    <|> elementQuadrangle
     <|> elementTriangle
 
 elementLine :: Stream s m Char => ParsecT s u m Element
@@ -77,6 +78,16 @@ elementLine = do { i    <- natural
                  ; el   <- line
                  ; return (Element i tags el)
                  }
+
+elementQuadrangle :: Stream s m Char => ParsecT s u m Element
+elementQuadrangle = do { i    <- natural
+                       ; _    <- spaces
+                       ; _    <- string "3"
+                       ; _    <- spaces
+                       ; tags <- elementTag
+                       ; el   <- quadrangle
+                       ; return (Element i tags el)
+                       }
 
 elementTriangle :: Stream s m Char => ParsecT s u m Element
 elementTriangle = do { i    <- natural
@@ -91,9 +102,7 @@ elementTriangle = do { i    <- natural
 -- Element Tags Parse
 
 elementTag :: Stream s m Char => ParsecT s u m [Int]
-elementTag = do { i    <- natural
-                ; _    <- spaces
-                ; ts   <- natural
+elementTag = do { ts   <- natural
                 ; _    <- spaces
                 ; tags <- count ts tagspace
                 ; return tags
@@ -118,6 +127,17 @@ line3 = do { i0  <- natural
            ; return (Line3 i0 i1 i2)
            }
 
+quadrangle :: Stream s m Char => ParsecT s u m ElementType
+quadrangle = do { i0  <- natural
+                ; _   <- spaces
+                ; i1  <- natural
+                ; _   <- spaces
+                ; i2  <- natural
+                ; _   <- spaces
+                ; i3  <- natural
+                ; return (Quadrangle i0 i1 i2 i3)
+                }
+
 triangle :: Stream s m Char => ParsecT s u m ElementType
 triangle = do { i0  <- natural
               ; _   <- spaces
@@ -126,4 +146,3 @@ triangle = do { i0  <- natural
               ; i2  <- natural
               ; return (Triangle i0 i1 i2)
               }
-
