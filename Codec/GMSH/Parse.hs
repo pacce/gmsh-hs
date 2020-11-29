@@ -64,39 +64,47 @@ plus = char '+' *> number
 -- Element Parse
 
 element :: Stream s m Char => ParsecT s u m Element
-element
-    =   elementLine
-    <|> elementQuadrangle
-    <|> elementTriangle
+element = do { i        <- natural
+             ; _        <- spaces
+             ; (ts, es) <- elementParse
+             ; return (Element i ts es)
+             }
+        where elementParse
+                =   elementLine
+                <|> elementQuadrangle
+                <|> elementTetrahedron
+                <|> elementTriangle
 
-elementLine :: Stream s m Char => ParsecT s u m Element
-elementLine = do { i    <- natural
-                 ; _    <- spaces
-                 ; _    <- string "1"
+elementLine :: Stream s m Char => ParsecT s u m ([Int], ElementType)
+elementLine = do { _    <- string "1"
                  ; _    <- spaces
                  ; tags <- elementTag
-                 ; el   <- line
-                 ; return (Element i tags el)
+                 ; es   <- line
+                 ; return (tags, es)
                  }
 
-elementQuadrangle :: Stream s m Char => ParsecT s u m Element
-elementQuadrangle = do { i    <- natural
-                       ; _    <- spaces
-                       ; _    <- string "3"
+elementQuadrangle :: Stream s m Char => ParsecT s u m ([Int], ElementType)
+elementQuadrangle = do { _    <- string "3"
                        ; _    <- spaces
                        ; tags <- elementTag
-                       ; el   <- quadrangle
-                       ; return (Element i tags el)
+                       ; es   <- quadrangle
+                       ; return (tags, es)
                        }
 
-elementTriangle :: Stream s m Char => ParsecT s u m Element
-elementTriangle = do { i    <- natural
-                     ; _    <- spaces
-                     ; _    <- string "2"
+elementTetrahedron :: Stream s m Char => ParsecT s u m ([Int], ElementType)
+elementTetrahedron = do { _    <- string "4"
+                        ; _    <- spaces
+                        ; tags <- elementTag
+                        ; es   <- tetrahedron
+                        ; return (tags, es)
+                        }
+
+elementTriangle :: Stream s m Char => ParsecT s u m ([Int], ElementType)
+elementTriangle = do { _    <- string "2"
                      ; _    <- spaces
                      ; tags <- elementTag
-                     ; el   <- triangle
-                     ; return (Element i tags el)
+                     ; es   <- triangle
+                     ; return (tags, es)
                      }
 
 -- Element Tags Parse
@@ -137,6 +145,17 @@ quadrangle = do { i0  <- natural
                 ; i3  <- natural
                 ; return (Quadrangle i0 i1 i2 i3)
                 }
+
+tetrahedron :: Stream s m Char => ParsecT s u m ElementType
+tetrahedron = do { i0  <- natural
+                 ; _   <- spaces
+                 ; i1  <- natural
+                 ; _   <- spaces
+                 ; i2  <- natural
+                 ; _   <- spaces
+                 ; i3  <- natural
+                 ; return (Tetrahedron i0 i1 i2 i3)
+                 }
 
 triangle :: Stream s m Char => ParsecT s u m ElementType
 triangle = do { i0  <- natural
