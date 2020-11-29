@@ -73,26 +73,32 @@ elementLine = do { i    <- natural
                  ; _    <- spaces
                  ; _    <- string "1"
                  ; _    <- spaces
-                 ; ts   <- natural
-                 ; _    <- spaces
-                 ; tags <- count ts tagspace
+                 ; tags <- elementTag
                  ; el   <- line
                  ; return (Element i tags el)
                  }
-              where tagspace = natural <* spaces
 
 elementTriangle :: Stream s m Char => ParsecT s u m Element
 elementTriangle = do { i    <- natural
-                 ; _    <- spaces
-                 ; _    <- string "2"
-                 ; _    <- spaces
-                 ; ts   <- natural
-                 ; _    <- spaces
-                 ; tags <- count ts tagspace
-                 ; el   <- triangle
-                 ; return (Element i tags el)
-                 }
-              where tagspace = natural <* spaces
+                     ; _    <- spaces
+                     ; _    <- string "2"
+                     ; _    <- spaces
+                     ; tags <- elementTag
+                     ; el   <- triangle
+                     ; return (Element i tags el)
+                     }
+
+-- Element Tags Parse
+
+elementTag :: Stream s m Char => ParsecT s u m [Int]
+elementTag = do { i    <- natural
+                ; _    <- spaces
+                ; ts   <- natural
+                ; _    <- spaces
+                ; tags <- count ts tagspace
+                ; return tags
+                }
+            where tagspace = (fmap read $ integer) <* spaces
 
 -- Element Type Parse
 
@@ -120,3 +126,4 @@ triangle = do { i0  <- natural
               ; i2  <- natural
               ; return (Triangle i0 i1 i2)
               }
+
