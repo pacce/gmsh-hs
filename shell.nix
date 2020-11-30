@@ -4,14 +4,16 @@ let
 
   inherit (nixpkgs) pkgs;
 
-  f = { mkDerivation, base, parsec, stdenv }:
+  f = { mkDerivation, base, parsec, QuickCheck, stdenv }:
       mkDerivation {
         pname = "gmsh";
         version = "0.1.0.0";
         src = ./.;
-        isLibrary = false;
+        isLibrary = true;
         isExecutable = true;
-        executableHaskellDepends = [ base parsec ];
+        libraryHaskellDepends = [ base parsec ];
+        executableHaskellDepends = [ base ];
+        testHaskellDepends = [ base QuickCheck ];
         license = "unknown";
         hydraPlatforms = stdenv.lib.platforms.none;
       };

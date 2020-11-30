@@ -29,3 +29,10 @@ library
                         Codec.GMSH.Types
     -- other-modules:
     build-depends:       base >=4.14 && <4.15, parsec >= 3.1
+
+Test-Suite test-gmsh
+    type:               exitcode-stdio-1.0
+    main-is:            Main.hs
+    hs-source-dirs:     test
+    build-depends:      base >= 4.14 && <4.15, QuickCheck
+    other-modules:      Test.Node
