@@ -71,6 +71,7 @@ element = do { i        <- natural
                     <|> elementParse (string "2") triangle
                     <|> elementParse (string "3") quadrangle
                     <|> elementParse (string "4") tetrahedron
+                    <|> elementParse (string "5") hexahedron
                     <|> elementParse (string "8") line3
                     <|> elementParse (string "9") triangle6
              ; return (Element i ts es)
@@ -95,6 +96,25 @@ elementTag = do { ts   <- natural
             where tagspace = (fmap read $ integer) <* spaces
 
 -- Element Type Parse
+
+hexahedron :: Stream s m Char => ParsecT s u m ElementType
+hexahedron = do { i0  <- natural
+                ; _   <- spaces
+                ; i1  <- natural
+                ; _   <- spaces
+                ; i2  <- natural
+                ; _   <- spaces
+                ; i3  <- natural
+                ; _   <- spaces
+                ; i4  <- natural
+                ; _   <- spaces
+                ; i5  <- natural
+                ; _   <- spaces
+                ; i6  <- natural
+                ; _   <- spaces
+                ; i7  <- natural
+                ; return (Hexahedron i0 i1 i2 i3 i4 i5 i6 i7)
+                }
 
 line :: Stream s m Char => ParsecT s u m ElementType
 line = do { i0  <- natural

@@ -36,4 +36,5 @@ data ElementType
     | Quadrangle9 Index Index Index Index Index Index Index Index Index
     | Tetrahedron Index Index Index Index
     | Tetrahedron10 Index Index Index Index Index Index Index Index Index Index
+    | Hexahedron Index Index Index Index Index Index Index Index
     deriving (Show)
