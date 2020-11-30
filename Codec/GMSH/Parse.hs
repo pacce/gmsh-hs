@@ -63,6 +63,16 @@ plus = char '+' *> number
 
 -- Element Parse
 
+elements :: Stream s m Char => ParsecT s u m [Element]
+elements =  do { _          <- string "$Elements"
+               ; _          <- endOfLine
+               ; es         <- natural
+               ; _          <- endOfLine
+               ; elements   <- count es (element <* endOfLine)
+               ; _          <- string "$EndElements"
+               ; return elements
+               }
+
 element :: Stream s m Char => ParsecT s u m Element
 element = do { i        <- natural
              ; _        <- spaces
