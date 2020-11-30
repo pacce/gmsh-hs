@@ -33,6 +33,24 @@ natural :: Stream s m Char => ParsecT s u m Int
 natural = fmap rd $ plus <|> number
     where rd = read :: String -> Int
 
+number :: Stream s m Char => ParsecT s u m [Char]
+number = many1 digit
+
+plus :: Stream s m Char => ParsecT s u m [Char]
+plus = char '+' *> number
+
+-- Node Parse
+
+nodes:: Stream s m Char => ParsecT s u m [Node]
+nodes = do { _      <- string "$Nodes"
+           ; _      <- endOfLine
+           ; ns     <- natural
+           ; _      <- endOfLine
+           ; nodes  <- count ns (node <* endOfLine)
+           ; _      <- string "$EndNodes"
+           ; return nodes
+           }
+
 node :: Stream s m Char => ParsecT s u m Node
 node = do { index <- natural
           ; _ <- spaces
@@ -43,23 +61,6 @@ node = do { index <- natural
           ; z <- coordinate
           ; return (Node index x y z)
           }
-
-nodes:: Stream s m Char => ParsecT s u m [Node]
-nodes = do { _      <- string "$Nodes"
-           ; _      <- endOfLine
-           ; ns     <- natural
-           ; _      <- endOfLine
-           ; nodes  <- count ns nodeline
-           ; _      <- string "$EndNodes"
-           ; return nodes
-           }
-        where nodeline = node <* endOfLine
-
-number :: Stream s m Char => ParsecT s u m [Char]
-number = many1 digit
-
-plus :: Stream s m Char => ParsecT s u m [Char]
-plus = char '+' *> number
 
 -- Element Parse
 
