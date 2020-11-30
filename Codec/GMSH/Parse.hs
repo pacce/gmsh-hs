@@ -7,6 +7,8 @@ import Codec.GMSH.Types(
         Coordinate,
         Element(..),
         ElementType(..),
+        Format(..),
+        Mesh(..),
         Node(..)
         )
 import Text.Parsec
@@ -38,6 +40,32 @@ number = many1 digit
 
 plus :: Stream s m Char => ParsecT s u m [Char]
 plus = char '+' *> number
+
+-- Mesh Parse
+
+mesh :: Stream s m Char => ParsecT s u m Mesh
+mesh = do { header  <- format
+          ; _       <- endOfLine
+          ; ns      <- nodes
+          ; _       <- endOfLine
+          ; es      <- elements
+          ; return (Mesh header ns es)
+          }
+
+-- Mesh Format Parse
+
+format :: Stream s m Char => ParsecT s u m Format
+format = do { _         <- string "$MeshFormat"
+            ; _         <- endOfLine
+            ; version   <- float
+            ; _         <- spaces
+            ; file      <- natural
+            ; _         <- spaces
+            ; size      <- natural
+            ; _         <- endOfLine
+            ; _         <- string "$EndMeshFormat"
+            ; return (Format version file size)
+            }
 
 -- Node Parse
 

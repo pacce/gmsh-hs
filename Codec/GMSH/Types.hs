@@ -2,8 +2,19 @@ module Codec.GMSH.Types (
         Coordinate,
         Element(..),
         ElementType(..),
+        Format(..),
+        Mesh(..),
         Node(..)
         ) where
+
+data Mesh = Mesh Format [Node] [Element]
+    deriving (Show)
+
+data Format = Format {
+    versionNumber   :: Float,
+    fileType        :: Int,
+    dataSize        :: Int
+} deriving (Show)
 
 type Coordinate = Float
 type Index = Int
