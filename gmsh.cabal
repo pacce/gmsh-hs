@@ -27,7 +27,7 @@ executable gmsh
 library
     exposed-modules:    Codec.GMSH.Parse,
                         Codec.GMSH.Types
-    -- other-modules:
+    other-modules:      Codec.GMSH.Parse.Commons
     build-depends:       base >=4.14 && <4.15, parsec >= 3.1
 
 Test-Suite test-gmsh
