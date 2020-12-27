@@ -20,9 +20,11 @@ executable gmsh
   main-is:             Main.hs
   -- other-modules:
   -- other-extensions:
-  build-depends:       base >=4.14 && <4.15
-  -- hs-source-dirs:
-  default-language:    Haskell2010
+  build-depends:        base >=4.14 && <4.15
+                        , gmsh
+                        , parsec >= 3.1
+  hs-source-dirs:       program
+  default-language:     Haskell2010
 
 library
     exposed-modules:    Codec.GMSH.Parse,
@@ -30,7 +32,8 @@ library
     other-modules:      Codec.GMSH.Parse.Commons,
                         Codec.GMSH.Parse.V1,
                         Codec.GMSH.Parse.V2
-    build-depends:       base >=4.14 && <4.15, parsec >= 3.1
+    build-depends:      base >=4.14 && <4.15
+                        , parsec >= 3.1
 
 Test-Suite test-gmsh
     type:               exitcode-stdio-1.0
