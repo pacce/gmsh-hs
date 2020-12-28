@@ -70,7 +70,8 @@ element :: Stream s m Char => ParsecT s u m Element
 element = do { i        <- natural
              ; _        <- spaces
              ; (ts, es)
-                    <-  elementParse (string "1") line
+                    <-  try (elementParse (string "15")  point1)
+                    <|> elementParse (string "1") line
                     <|> elementParse (string "2") triangle
                     <|> elementParse (string "3") quadrangle
                     <|> elementParse (string "4") tetrahedron
@@ -84,6 +85,8 @@ elementParse :: Stream s m Char => (ParsecT s u m String) -> (ParsecT s u m Elem
 elementParse elmtype elmval = do { _    <- elmtype
                                  ; _    <- spaces
                                  ; tags <- elementTag
+                                 ; _    <- natural
+                                 ; _    <- spaces
                                  ; es   <- elmval
                                  ; return (tags, es)
                                  }
@@ -134,6 +137,11 @@ line3 = do { i0  <- natural
            ; i2  <- natural
            ; return (Line3 i0 i1 i2)
            }
+
+point1 :: Stream s m Char => ParsecT s u m ElementType
+point1 = do { i0 <- natural
+            ; return (Point1 i0)
+            }
 
 quadrangle :: Stream s m Char => ParsecT s u m ElementType
 quadrangle = do { i0  <- natural

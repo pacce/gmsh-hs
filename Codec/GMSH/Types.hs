@@ -33,19 +33,20 @@ data Element = Element {
 } deriving (Show)
 
 data ElementType
-    = Line Index Index
+    = Hexahedron Index Index Index Index Index Index Index Index
+    | Line Index Index
     | Line3 Index Index Index
     | Line4 Index Index Index Index
+    | Point1 Index
+    | Quadrangle Index Index Index Index
+    | Quadrangle8 Index Index Index Index Index Index Index Index
+    | Quadrangle9 Index Index Index Index Index Index Index Index Index
+    | Tetrahedron Index Index Index Index
+    | Tetrahedron10 Index Index Index Index Index Index Index Index Index Index
     | Triangle Index Index Index
     | Triangle6 Index Index Index Index Index Index
     | Triangle9 Index Index Index Index Index Index Index Index Index
     | Triangle10 Index Index Index Index Index Index Index Index Index Index
     | Triangle12 Index Index Index Index Index Index Index Index Index Index Index Index
     | Triangle15 Index Index Index Index Index Index Index Index Index Index Index Index Index Index Index
-    | Quadrangle Index Index Index Index
-    | Quadrangle8 Index Index Index Index Index Index Index Index
-    | Quadrangle9 Index Index Index Index Index Index Index Index Index
-    | Tetrahedron Index Index Index Index
-    | Tetrahedron10 Index Index Index Index Index Index Index Index Index Index
-    | Hexahedron Index Index Index Index Index Index Index Index
     deriving (Show)
