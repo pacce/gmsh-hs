@@ -6,4 +6,4 @@ import Codec.GMSH.Types (Mesh)
 import Text.Parsec
 
 mesh :: Stream s m Char => ParsecT s u m Mesh
-mesh = choice [V1.mesh, V2.mesh]
+mesh = choice [(try V1.mesh), (try  V2.mesh)]
