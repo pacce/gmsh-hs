@@ -8,7 +8,7 @@ version:             0.1.0.0
 -- description:
 -- bug-reports:
 -- license:
-license-file:        LICENSE
+-- license-file:        LICENSE
 author:              Pedro Henrique Dalla Pacce
 maintainer:          pedrodallapacce@gmail.com
 -- copyright:
@@ -34,10 +34,3 @@ library
                         Codec.GMSH.Parse.V2
     build-depends:      base >=4.14 && <4.15
                         , parsec >= 3.1
-
-Test-Suite test-gmsh
-    type:               exitcode-stdio-1.0
-    main-is:            Main.hs
-    hs-source-dirs:     test
-    build-depends:      base >= 4.14 && <4.15, QuickCheck
-    other-modules:      Test.Node
