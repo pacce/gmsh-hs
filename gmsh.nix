@@ -9,10 +9,7 @@ let
         pname = "gmsh";
         version = "0.1.0.0";
         src = ./.;
-        isLibrary = true;
-        isExecutable = true;
         libraryHaskellDepends = [ base parsec ];
-        executableHaskellDepends = [ base parsec ];
         license = "unknown";
         hydraPlatforms = stdenv.lib.platforms.none;
       };
